@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<meta name="viewport"
+content="width=device-width,
+initial-scale=1.0">
 
 <title>Don Coin App</title>
 
@@ -107,6 +112,7 @@ color:#94a3b8;
 }
 
 </style>
+
 </head>
 
 <body>
@@ -120,69 +126,97 @@ src="https://i.imgur.com/yXOvdOS.png"
 
 <h1>🪙 Don Coin App</h1>
 
-<div class="balance" id="balance">
+<div class="balance"
+id="balance">
+
 100 Don
+
 </div>
 
-<p>1 Don = $0.0001</p>
+<p>
+1 Don = $0.0001
+</p>
 
 </div>
 
 <div class="card">
 
-<h2>🎁 Daily Reward</h2>
+<h2>
+🎁 Daily Reward
+</h2>
 
 <button
 class="claim"
-onclick="claimReward()"
->
+onclick="claimReward()">
+
 Claim 10 Don
+
 </button>
 
-<div class="info" id="claimInfo">
-Claim once every 24 hours
+<div class="info"
+id="claimInfo">
+
+Watch ad first before claiming
+
 </div>
 
 </div>
 
 <div class="card">
 
-<h2>📺 Watch Ads</h2>
+<h2>
+📺 Watch Ads
+</h2>
 
 <button
 class="ads"
-onclick="watchAds()"
->
+onclick="watchAds()">
+
 Watch Ad (+2 Don)
+
 </button>
 
 <div class="info">
+
 Ads Watched:
-<span id="adsCount">0</span>/20
+<span id="adsCount">
+
+0
+
+</span>/20
+
 </div>
 
 </div>
 
 <div class="card">
 
-<h2>🎰 Spin & Win</h2>
+<h2>
+🎰 Spin & Win
+</h2>
 
 <button
 class="spin"
-onclick="spinWheel()"
->
+onclick="spinWheel()">
+
 Spin
+
 </button>
 
-<div class="info" id="spinResult">
-Try your luck
+<div class="info"
+id="spinResult">
+
+Watch ad first before spin
+
 </div>
 
 </div>
 
 <div class="card">
 
-<h2>👥 Referral Program</h2>
+<h2>
+👥 Referral Program
+</h2>
 
 <p>
 Invite friends and earn 20 Don
@@ -196,33 +230,42 @@ readonly
 
 <button
 class="copy"
-onclick="copyReferral()"
->
+onclick="copyReferral()">
+
 Copy Referral Link
+
 </button>
 
 </div>
 
 <div class="card">
 
-<h2>🔄 Swap Don → USDT</h2>
+<h2>
+🔄 Swap Don → USDT
+</h2>
 
 <button
 class="swap"
-onclick="swapCoins()"
->
+onclick="swapCoins()">
+
 Swap Coins
+
 </button>
 
 <div class="info">
-Minimum Swap: 10000 Don
+
+Minimum Swap:
+10000 Don
+
 </div>
 
 </div>
 
 <div class="card">
 
-<h2>💸 Withdraw</h2>
+<h2>
+💸 Withdraw
+</h2>
 
 <input
 type="text"
@@ -232,27 +275,35 @@ placeholder="Enter USDT Wallet"
 
 <button
 class="withdraw"
-onclick="withdrawCoins()"
->
+onclick="withdrawCoins()">
+
 Withdraw
+
 </button>
 
 <div class="info">
-Minimum Withdraw: 10000 Don
+
+Minimum Withdraw:
+10000 Don
+
 </div>
 
 </div>
 
 <div class="card">
 
-<h2>🪙 About Don Coin</h2>
+<h2>
+🪙 About Don Coin
+</h2>
 
 <p class="info">
 
 🪙 Don Coin is the official reward coin used inside the Don Mini App on Telegram.
+
 <br><br>
 
 💰 Users can earn Don Coins by:
+
 <br><br>
 
 📺 Watching ads<br>
@@ -266,14 +317,28 @@ Minimum Withdraw: 10000 Don
 </div>
 
 <div class="footer">
+
 Don Coin App © 2026
+
 </div>
+
+<!-- MONETAG ADS -->
+
+<script
+src='//libtl.com/sdk.js'
+data-zone='3351257'
+data-sdk='show_3351257'>
+</script>
 
 <script>
 
 let balance = 100;
 
 let adsWatched = 0;
+
+let canClaim = false;
+
+let canSpin = false;
 
 // REFERRAL LINK
 
@@ -283,15 +348,63 @@ Math.floor(Math.random() * 100000);
 const referralLink =
 `https://t.me/DonCoinApp_bot?start=${userId}`;
 
-document.getElementById("referralLink")
-.value = referralLink;
+document.getElementById(
+"referralLink"
+).value = referralLink;
 
 // UPDATE BALANCE
 
 function updateBalance(){
 
-document.getElementById("balance")
-.innerText = balance + " Don";
+document.getElementById(
+"balance"
+).innerText =
+balance + " Don";
+
+}
+
+// WATCH ADS
+
+function watchAds(){
+
+if(adsWatched >= 20){
+
+alert(
+"Daily Ads Limit Reached"
+);
+
+return;
+
+}
+
+show_3351257().then(() => {
+
+adsWatched++;
+
+balance += 2;
+
+document.getElementById(
+"adsCount"
+).innerText =
+adsWatched;
+
+updateBalance();
+
+canClaim = true;
+
+canSpin = true;
+
+alert(
+"You earned 2 Don"
+);
+
+}).catch(() => {
+
+alert(
+"Ad not completed"
+);
+
+});
 
 }
 
@@ -299,8 +412,20 @@ document.getElementById("balance")
 
 function claimReward(){
 
+if(!canClaim){
+
+alert(
+"Watch ad first before claiming"
+);
+
+return;
+
+}
+
 let lastClaim =
-localStorage.getItem("lastClaim");
+localStorage.getItem(
+"lastClaim"
+);
 
 let now = Date.now();
 
@@ -309,13 +434,17 @@ now - lastClaim < 86400000){
 
 let hours =
 Math.floor(
-(86400000 - (now - lastClaim))
+(86400000 -
+(now - lastClaim))
 / 3600000
 );
 
-document.getElementById("claimInfo")
-.innerText =
-"Come back in " + hours + " hours";
+document.getElementById(
+"claimInfo"
+).innerText =
+"Come back in " +
+hours +
+" hours";
 
 return;
 
@@ -330,38 +459,27 @@ now
 
 updateBalance();
 
-alert("You claimed 10 Don");
+canClaim = false;
 
-}
-
-// WATCH ADS
-
-function watchAds(){
-
-if(adsWatched >= 20){
-
-alert("Daily Ads Limit Reached");
-
-return;
-
-}
-
-adsWatched++;
-
-balance += 2;
-
-document.getElementById("adsCount")
-.innerText = adsWatched;
-
-updateBalance();
-
-alert("You earned 2 Don");
+alert(
+"You claimed 10 Don"
+);
 
 }
 
 // SPIN
 
 function spinWheel(){
+
+if(!canSpin){
+
+alert(
+"Watch ad first before spin"
+);
+
+return;
+
+}
 
 let rewards = [
 0,1,2,3,5,10,20,50
@@ -379,9 +497,14 @@ balance += reward;
 
 updateBalance();
 
-document.getElementById("spinResult")
-.innerText =
-"You won " + reward + " Don";
+document.getElementById(
+"spinResult"
+).innerText =
+"You won " +
+reward +
+" Don";
+
+canSpin = false;
 
 }
 
@@ -393,7 +516,9 @@ navigator.clipboard.writeText(
 referralLink
 );
 
-alert("Referral Link Copied");
+alert(
+"Referral Link Copied"
+);
 
 }
 
@@ -426,12 +551,15 @@ usdt.toFixed(2)
 function withdrawCoins(){
 
 let wallet =
-document.getElementById("wallet")
-.value;
+document.getElementById(
+"wallet"
+).value;
 
 if(wallet === ""){
 
-alert("Enter wallet address");
+alert(
+"Enter wallet address"
+);
 
 return;
 
