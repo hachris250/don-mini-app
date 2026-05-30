@@ -333,256 +333,175 @@ data-sdk='show_3351257'>
 <script>
 
 let balance = 100;
-
 let adsWatched = 0;
-
 let canClaim = false;
-
 let canSpin = false;
+let referralEarnings = 0;
 
 // REFERRAL LINK
+const userId = Math.floor(Math.random() * 100000);
+const referralLink = `https://t.me/DonCoinApp_bot?start=${userId}`;
 
-const userId =
-Math.floor(Math.random() * 100000);
-
-const referralLink =
-`https://t.me/DonCoinApp_bot?start=${userId}`;
-
-document.getElementById(
-"referralLink"
-).value = referralLink;
+document.getElementById("referralLink").value = referralLink;
 
 // UPDATE BALANCE
-
 function updateBalance(){
-
-document.getElementById(
-"balance"
-).innerText =
-balance + " Don";
-
+    document.getElementById("balance").innerText = balance + " Don";
 }
 
 // WATCH ADS
-
 function watchAds(){
 
-if(adsWatched >= 20){
+    if(adsWatched >= 30){
+        alert("Daily Ads Limit Reached");
+        return;
+    }
 
-alert(
-"Daily Ads Limit Reached"
-);
+    show_3351257().then(() => {
 
-return;
+        adsWatched++;
+        balance += 3;
 
+        document.getElementById("adsCount").innerText = adsWatched;
+
+        updateBalance();
+
+        canClaim = true;
+        canSpin = true;
+
+        alert("You earned 3 Don");
+
+    }).catch(() => {
+
+        alert("Ad not completed");
+
+    });
 }
 
-show_3351257().then(() => {
-
-adsWatched++;
-
-balance += 2;
-
-document.getElementById(
-"adsCount"
-).innerText =
-adsWatched;
-
-updateBalance();
-
-canClaim = true;
-
-canSpin = true;
-
-alert(
-"You earned 2 Don"
-);
-
-}).catch(() => {
-
-alert(
-"Ad not completed"
-);
-
-});
-
-}
-
-// CLAIM REWARD
-
+// DAILY CLAIM 50 DON EVERY 24 HOURS
 function claimReward(){
 
-if(!canClaim){
+    if(!canClaim){
+        alert("Watch ad first before claiming");
+        return;
+    }
 
-alert(
-"Watch ad first before claiming"
-);
+    let lastClaim = localStorage.getItem("lastClaim");
+    let now = Date.now();
 
-return;
+    if(lastClaim && (now - lastClaim < 86400000)){
 
+        let remaining = 86400000 - (now - lastClaim);
+        let hours = Math.floor(remaining / 3600000);
+
+        document.getElementById("claimInfo").innerText =
+            "Come back in " + hours + " hours";
+
+        return;
+    }
+
+    balance += 50;
+
+    localStorage.setItem("lastClaim", now);
+
+    updateBalance();
+
+    canClaim = false;
+
+    alert("You claimed 50 Don");
 }
 
-let lastClaim =
-localStorage.getItem(
-"lastClaim"
-);
-
-let now = Date.now();
-
-if(lastClaim &&
-now - lastClaim < 86400000){
-
-let hours =
-Math.floor(
-(86400000 -
-(now - lastClaim))
-/ 3600000
-);
-
-document.getElementById(
-"claimInfo"
-).innerText =
-"Come back in " +
-hours +
-" hours";
-
-return;
-
-}
-
-balance += 10;
-
-localStorage.setItem(
-"lastClaim",
-now
-);
-
-updateBalance();
-
-canClaim = false;
-
-alert(
-"You claimed 10 Don"
-);
-
-}
-
-// SPIN
-
+// SPIN & WIN
 function spinWheel(){
 
-if(!canSpin){
+    if(!canSpin){
+        alert("Watch ad first before spin");
+        return;
+    }
 
-alert(
-"Watch ad first before spin"
-);
+    let rewards = [0,1,2,3,5,10,20,50];
 
-return;
+    let reward =
+        rewards[Math.floor(Math.random() * rewards.length)];
 
-}
+    balance += reward;
 
-let rewards = [
-0,1,2,3,5,10,20,50
-];
+    updateBalance();
 
-let reward =
-rewards[
-Math.floor(
-Math.random() *
-rewards.length
-)
-];
+    document.getElementById("spinResult").innerText =
+        "You won " + reward + " Don";
 
-balance += reward;
-
-updateBalance();
-
-document.getElementById(
-"spinResult"
-).innerText =
-"You won " +
-reward +
-" Don";
-
-canSpin = false;
-
+    canSpin = false;
 }
 
 // COPY REFERRAL
-
 function copyReferral(){
 
-navigator.clipboard.writeText(
-referralLink
-);
+    navigator.clipboard.writeText(referralLink);
 
-alert(
-"Referral Link Copied"
-);
+    alert("Referral Link Copied");
+}
 
+// REFERRAL REWARD = 100 DON
+function addReferralReward(){
+
+    balance += 100;
+
+    updateBalance();
+
+    alert("Referral Bonus: +100 Don");
+}
+
+// 10% REFERRAL COMMISSION
+function addReferralCommission(amount){
+
+    let commission = amount * 0.10;
+
+    balance += commission;
+
+    referralEarnings += commission;
+
+    updateBalance();
 }
 
 // SWAP
-
 function swapCoins(){
 
-if(balance < 10000){
+    if(balance < 10000){
 
-alert(
-"Minimum Swap is 10000 Don"
-);
+        alert("Minimum Swap is 10000 Don");
 
-return;
+        return;
+    }
 
-}
+    let usdt = balance * 0.0001;
 
-let usdt =
-balance * 0.0001;
-
-alert(
-"Swapped to $" +
-usdt.toFixed(2)
-);
-
+    alert("Swapped to $" + usdt.toFixed(2));
 }
 
 // WITHDRAW
-
 function withdrawCoins(){
 
-let wallet =
-document.getElementById(
-"wallet"
-).value;
+    let wallet =
+        document.getElementById("wallet").value;
 
-if(wallet === ""){
+    if(wallet === ""){
 
-alert(
-"Enter wallet address"
-);
+        alert("Enter wallet address");
 
-return;
+        return;
+    }
 
-}
+    if(balance < 10000){
 
-if(balance < 10000){
+        alert("Minimum Withdraw is 10000 Don");
 
-alert(
-"Minimum Withdraw is 10000 Don"
-);
+        return;
+    }
 
-return;
+    let usdt = balance * 0.0001;
 
-}
-
-let usdt =
-balance * 0.0001;
-
-alert(
-"Withdraw Request Sent: $" +
-usdt.toFixed(2)
-);
-
+    alert("Withdraw Request Sent: $" + usdt.toFixed(2));
 }
 
 updateBalance();
