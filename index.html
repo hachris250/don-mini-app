@@ -1,512 +1,206 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-
+<html lang="en"><head>
 <meta charset="UTF-8">
-
-<meta name="viewport"
-content="width=device-width,
-initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Don Coin App</title>
-
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial;
-}
-
-body{
-background:#0f172a;
-color:white;
-padding:20px;
-text-align:center;
-}
-
-.card{
-background:#1e293b;
-padding:20px;
-border-radius:20px;
-margin-bottom:20px;
-box-shadow:0 0 10px rgba(0,0,0,0.3);
-}
-
-.logo{
-width:120px;
-height:120px;
-border-radius:50%;
-margin-bottom:15px;
-}
-
-.balance{
-font-size:30px;
-margin:15px 0;
-color:#38bdf8;
-font-weight:bold;
-}
-
-button{
-width:100%;
-padding:15px;
-border:none;
-border-radius:15px;
-margin-top:10px;
-font-size:16px;
-font-weight:bold;
-cursor:pointer;
-}
-
-.claim{
-background:#22c55e;
-color:white;
-}
-
-.ads{
-background:#f59e0b;
-color:white;
-}
-
-.spin{
-background:#a855f7;
-color:white;
-}
-
-.swap{
-background:#06b6d4;
-color:white;
-}
-
-.withdraw{
-background:#ef4444;
-color:white;
-}
-
-.copy{
-background:#3b82f6;
-color:white;
-}
-
-.info{
-margin-top:10px;
-font-size:14px;
-color:#cbd5e1;
-}
-
-input{
-width:100%;
-padding:15px;
-border:none;
-border-radius:12px;
-margin-top:10px;
-font-size:16px;
-}
-
-.footer{
-margin-top:20px;
-font-size:13px;
-color:#94a3b8;
-}
-
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
+body{background:#0f172a;color:#fff;padding:20px;text-align:center}
+.card{background:#1e293b;padding:20px;border-radius:20px;margin-bottom:20px;box-shadow:0 0 10px rgba(0,0,0,.3)}
+.logo{width:120px;height:120px;border-radius:50%;margin-bottom:15px}
+.balance{font-size:30px;margin:15px 0;color:#38bdf8;font-weight:bold}
+button,input{width:100%;padding:15px;border:none;border-radius:12px;margin-top:10px;font-size:16px}
+button{cursor:pointer;font-weight:bold}
+.claim{background:#22c55e;color:#fff}
+.ads{background:#f59e0b;color:#fff}
+.spin{background:#a855f7;color:#fff}
+.swap{background:#06b6d4;color:#fff}
+.withdraw{background:#ef4444;color:#fff}
+.copy{background:#3b82f6;color:#fff}
+.info{margin-top:10px;font-size:14px;color:#cbd5e1}
+.footer{margin-top:20px;font-size:13px;color:#94a3b8}
 </style>
-
 </head>
-
 <body>
 
 <div class="card">
-
-<img
-class="logo"
-src="https://i.imgur.com/yXOvdOS.png"
-/>
-
+<img class="logo" src="https://i.imgur.com/yXOvdOS.png">
 <h1>🪙 Don Coin App</h1>
-
-<div class="balance"
-id="balance">
-
-100 Don
-
-</div>
-
-<p>
-1 Don = $0.0001
-</p>
-
+<div class="balance" id="balance">100 Don</div>
+<p>1 Don = $0.0001</p>
 </div>
 
 <div class="card">
-
-<h2>
-🎁 Daily Reward
-</h2>
-
-<button
-class="claim"
-onclick="claimReward()">
-
-Claim 10 Don
-
-</button>
-
-<div class="info"
-id="claimInfo">
-
-Watch ad first before claiming
-
-</div>
-
+<h2>🎁 Daily Reward</h2>
+<button class="claim" onclick="claimReward()">Claim 50 Don</button>
+<div class="info" id="claimInfo">Watch ad first before claiming</div>
 </div>
 
 <div class="card">
-
-<h2>
-📺 Watch Ads
-</h2>
-
-<button
-class="ads"
-onclick="watchAds()">
-
-Watch Ad (+2 Don)
-
-</button>
-
-<div class="info">
-
-Ads Watched:
-<span id="adsCount">
-
-0
-
-</span>/20
-
-</div>
-
+<h2>📺 Watch Ads</h2>
+<button class="ads" onclick="watchAds()">Watch Ad (+3 Don)</button>
+<div class="info">Ads Watched: <span id="adsCount">0</span>/30</div>
 </div>
 
 <div class="card">
-
-<h2>
-🎰 Spin & Win
-</h2>
-
-<button
-class="spin"
-onclick="spinWheel()">
-
-Spin
-
-</button>
-
-<div class="info"
-id="spinResult">
-
-Watch ad first before spin
-
-</div>
-
+<h2>🎰 Spin &amp; Win</h2>
+<button class="spin" onclick="spinWheel()">Spin</button>
+<div class="info" id="spinResult">Watch ad first before spin</div>
 </div>
 
 <div class="card">
-
-<h2>
-👥 Referral Program
-</h2>
-
-<p>
-Invite friends and earn 20 Don
-</p>
-
-<input
-type="text"
-id="referralLink"
-readonly
-/>
-
-<button
-class="copy"
-onclick="copyReferral()">
-
-Copy Referral Link
-
-</button>
-
+<h2>👥 Referral Program</h2>
+<input type="text" id="referralLink" readonly="">
+<button class="copy" onclick="copyReferral()">Copy Referral Link</button>
 </div>
 
 <div class="card">
-
-<h2>
-🔄 Swap Don → USDT
-</h2>
-
-<button
-class="swap"
-onclick="swapCoins()">
-
-Swap Coins
-
-</button>
-
-<div class="info">
-
-Minimum Swap:
-10000 Don
-
-</div>
-
+<h2>🔄 Swap Don → USDT</h2>
+<button class="swap" onclick="swapCoins()">Swap Coins</button>
+<div class="info">Minimum Swap: 10000 Don</div>
 </div>
 
 <div class="card">
-
-<h2>
-💸 Withdraw
-</h2>
-
-<input
-type="text"
-id="wallet"
-placeholder="Enter USDT Wallet"
-/>
-
-<button
-class="withdraw"
-onclick="withdrawCoins()">
-
-Withdraw
-
-</button>
-
-<div class="info">
-
-Minimum Withdraw:
-10000 Don
-
+<h2>💸 Withdraw</h2>
+<input type="text" id="wallet" placeholder="Enter USDT Wallet">
+<button class="withdraw" onclick="withdrawCoins()">Withdraw</button>
+<div class="info">Minimum Withdraw: 10000 Don</div>
 </div>
 
-</div>
+<div class="footer">Don Coin App © 2026</div>
 
-<div class="card">
-
-<h2>
-🪙 About Don Coin
-</h2>
-
-<p class="info">
-
-🪙 Don Coin is the official reward coin used inside the Don Mini App on Telegram.
-
-<br><br>
-
-💰 Users can earn Don Coins by:
-
-<br><br>
-
-📺 Watching ads<br>
-🎁 Claiming daily rewards<br>
-🎰 Spinning the lucky wheel<br>
-👥 Inviting friends<br>
-✅ Completing tasks
-
-</p>
-
-</div>
-
-<div class="footer">
-
-Don Coin App © 2026
-
-</div>
-
-<!-- MONETAG ADS -->
-
-<script
-src='//libtl.com/sdk.js'
-data-zone='3351257'
-data-sdk='show_3351257'>
-</script>
+<script src="//libtl.com/sdk.js" data-zone="11071335" data-sdk="show_11071335"></script>
 
 <script>
-
-let balance = 100;
-let adsWatched = 0;
+let balance = Number(localStorage.getItem("balance")) || 100;
+let adsWatched = Number(localStorage.getItem("adsWatched")) || 0;
 let canClaim = false;
 let canSpin = false;
-let referralEarnings = 0;
 
-// REFERRAL LINK
-const userId = Math.floor(Math.random() * 100000);
+let userId = localStorage.getItem("userId");
+if(!userId){
+ userId = Math.floor(Math.random()*100000);
+ localStorage.setItem("userId", userId);
+}
+
 const referralLink = `https://t.me/DonCoinApp_bot?start=${userId}`;
-
 document.getElementById("referralLink").value = referralLink;
 
-// UPDATE BALANCE
 function updateBalance(){
-    document.getElementById("balance").innerText = balance + " Don";
+ document.getElementById("balance").innerText = balance + " Don";
+ document.getElementById("adsCount").innerText = adsWatched;
+ localStorage.setItem("balance", balance);
+ localStorage.setItem("adsWatched", adsWatched);
 }
 
-// WATCH ADS
 function watchAds(){
+ if(adsWatched >= 30){
+   alert("Daily Ads Limit Reached");
+   return;
+ }
 
-    if(adsWatched >= 30){
-        alert("Daily Ads Limit Reached");
-        return;
-    }
+ if(typeof show_11071335 !== "function"){
+   adsWatched++;
+   balance += 3;
+   updateBalance();
+   canClaim = true;
+   canSpin = true;
+   alert("Test Mode: +3 Don");
+   return;
+ }
 
-    show_3351257().then(() => {
-
-        adsWatched++;
-        balance += 3;
-
-        document.getElementById("adsCount").innerText = adsWatched;
-
-        updateBalance();
-
-        canClaim = true;
-        canSpin = true;
-
-        alert("You earned 3 Don");
-
-    }).catch(() => {
-
-        alert("Ad not completed");
-
-    });
+ show_11071335().then(() => {
+   adsWatched++;
+   balance += 3;
+   updateBalance();
+   canClaim = true;
+   canSpin = true;
+   alert("You earned 3 Don");
+ }).catch(() => {
+   alert("Ad not completed");
+ });
 }
 
-// DAILY CLAIM 50 DON EVERY 24 HOURS
 function claimReward(){
+ if(!canClaim){
+   alert("Watch ad first before claiming");
+   return;
+ }
 
-    if(!canClaim){
-        alert("Watch ad first before claiming");
-        return;
-    }
+ let lastClaim = Number(localStorage.getItem("lastClaim")) || 0;
+ let now = Date.now();
 
-    let lastClaim = localStorage.getItem("lastClaim");
-    let now = Date.now();
+ if(lastClaim && now - lastClaim < 86400000){
+   let remaining = 86400000 - (now - lastClaim);
+   let hours = Math.ceil(remaining / 3600000);
+   document.getElementById("claimInfo").innerText =
+   "Come back in " + hours + " hours";
+   return;
+ }
 
-    if(lastClaim && (now - lastClaim < 86400000)){
-
-        let remaining = 86400000 - (now - lastClaim);
-        let hours = Math.floor(remaining / 3600000);
-
-        document.getElementById("claimInfo").innerText =
-            "Come back in " + hours + " hours";
-
-        return;
-    }
-
-    balance += 50;
-
-    localStorage.setItem("lastClaim", now);
-
-    updateBalance();
-
-    canClaim = false;
-
-    alert("You claimed 50 Don");
+ balance += 50;
+ localStorage.setItem("lastClaim", now);
+ updateBalance();
+ canClaim = false;
+ alert("You claimed 50 Don");
 }
 
-// SPIN & WIN
 function spinWheel(){
+ if(!canSpin){
+   alert("Watch ad first before spin");
+   return;
+ }
 
-    if(!canSpin){
-        alert("Watch ad first before spin");
-        return;
-    }
+ let rewards = [0,1,2,3,5,10,20,50];
+ let reward = rewards[Math.floor(Math.random()*rewards.length)];
 
-    let rewards = [0,1,2,3,5,10,20,50];
+ balance += reward;
+ updateBalance();
 
-    let reward =
-        rewards[Math.floor(Math.random() * rewards.length)];
+ document.getElementById("spinResult").innerText =
+ "You won " + reward + " Don";
 
-    balance += reward;
-
-    updateBalance();
-
-    document.getElementById("spinResult").innerText =
-        "You won " + reward + " Don";
-
-    canSpin = false;
+ canSpin = false;
 }
 
-// COPY REFERRAL
 function copyReferral(){
-
-    navigator.clipboard.writeText(referralLink);
-
-    alert("Referral Link Copied");
+ navigator.clipboard.writeText(referralLink);
+ alert("Referral Link Copied");
 }
 
-// REFERRAL REWARD = 100 DON
-function addReferralReward(){
-
-    balance += 100;
-
-    updateBalance();
-
-    alert("Referral Bonus: +100 Don");
-}
-
-// 10% REFERRAL COMMISSION
-function addReferralCommission(amount){
-
-    let commission = amount * 0.10;
-
-    balance += commission;
-
-    referralEarnings += commission;
-
-    updateBalance();
-}
-
-// SWAP
 function swapCoins(){
+ if(balance < 10000){
+   alert("Minimum Swap is 10000 Don");
+   return;
+ }
 
-    if(balance < 10000){
-
-        alert("Minimum Swap is 10000 Don");
-
-        return;
-    }
-
-    let usdt = balance * 0.0001;
-
-    alert("Swapped to $" + usdt.toFixed(2));
+ let usdt = balance * 0.0001;
+ balance = 0;
+ updateBalance();
+ alert("Swapped to $" + usdt.toFixed(2));
 }
 
-// WITHDRAW
 function withdrawCoins(){
+ let wallet = document.getElementById("wallet").value.trim();
 
-    let wallet =
-        document.getElementById("wallet").value;
+ if(wallet === ""){
+   alert("Enter wallet address");
+   return;
+ }
 
-    if(wallet === ""){
+ if(balance < 10000){
+   alert("Minimum Withdraw is 10000 Don");
+   return;
+ }
 
-        alert("Enter wallet address");
+ let usdt = balance * 0.0001;
+ balance = 0;
+ updateBalance();
 
-        return;
-    }
-
-    if(balance < 10000){
-
-        alert("Minimum Withdraw is 10000 Don");
-
-        return;
-    }
-
-    let usdt = balance * 0.0001;
-
-    alert("Withdraw Request Sent: $" + usdt.toFixed(2));
+ alert("Withdraw Request Sent: $" + usdt.toFixed(2));
 }
 
 updateBalance();
-
 </script>
 
-</body>
-</html>
+</body></html>
