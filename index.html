@@ -141,11 +141,7 @@ function watchAds(){
  .catch(() => alert("Ad not completed"));
 }
 
-function claimReward(){
- if(!canClaim){
-   alert("Watch 3 ads before claiming Daily Reward");
-   return;
- }
+async function claimReward(){
 
  let lastClaim = Number(localStorage.getItem("lastClaim")) || 0;
  let now = Date.now();
@@ -158,14 +154,26 @@ function claimReward(){
    return;
  }
 
- balance += 50;
- localStorage.setItem("lastClaim", now);
- updateBalance();
- canClaim = false; claimAds = 0;
- alert("You claimed 50 Don");
+ try{
+
+   await show_11071335();
+   await show_11071335();
+   await show_11071335();
+
+   balance += 50;
+   localStorage.setItem("lastClaim", now);
+   updateBalance();
+
+   alert("You claimed 50 Don");
+
+ }catch{
+   alert("Complete all 3 ads first");
+ }
+
 }
 
-function spinWheel(){
+async function spinWheel(){
+
  resetDailySpin();
 
  if(spinCount >= 5){
@@ -173,25 +181,29 @@ function spinWheel(){
    return;
  }
 
- if(!canSpin){
-   alert("Watch 3 ads before spin");
-   return;
+ try{
+
+   await show_11071335();
+   await show_11071335();
+   await show_11071335();
+
+   let rewards = [0,1,2,3,5,10,20,50];
+   let reward = rewards[Math.floor(Math.random()*rewards.length)];
+
+   balance += reward;
+
+   spinCount++;
+   localStorage.setItem("spinCount", spinCount);
+
+   updateBalance();
+
+   document.getElementById("spinResult").innerText =
+   "You won " + reward + " Don";
+
+ }catch{
+   alert("Complete all 3 ads first");
  }
 
- let rewards = [0,1,2,3,5,10,20,50];
- let reward = rewards[Math.floor(Math.random()*rewards.length)];
-
- balance += reward;
- updateBalance();
-
- document.getElementById("spinResult").innerText =
- "You won " + reward + " Don";
-
- spinCount++;
- localStorage.setItem("spinCount", spinCount);
-
- canSpin = false;
- spinAds = 0;
 }
 
 function copyReferral(){
