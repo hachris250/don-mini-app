@@ -24,7 +24,7 @@ button{cursor:pointer;font-weight:bold}
 <body>
 
 <div class="card">
-<img class="logo" src="https://i.imgur.com/yXOvdOS.png">
+<img class="logo" src="https://cryptologos.cc/logos/don-key-don-logo.png">
 <h1>🪙 Don Coin App</h1>
 <div class="balance" id="balance">100 Don</div>
 <p>1 Don = $0.0001</p>
@@ -76,6 +76,10 @@ let balance = Number(localStorage.getItem("balance")) || 100;
 let adsWatched = Number(localStorage.getItem("adsWatched")) || 0;
 let canClaim = false;
 let canSpin = false;
+let claimAds = 0;
+let spinAds = 0;
+let spinCount = Number(localStorage.getItem("spinCount")) || 0;
+let spinDay = localStorage.getItem("spinDay") || new Date().toDateString();
 
 let userId = localStorage.getItem("userId");
 if(!userId){
@@ -86,6 +90,16 @@ if(!userId){
 const referralLink = `https://t.me/DonCoinApp_bot?start=${userId}`;
 document.getElementById("referralLink").value = referralLink;
 
+function resetDailySpin(){
+ const today = new Date().toDateString();
+ if(spinDay !== today){
+   spinDay = today;
+   spinCount = 0;
+   localStorage.setItem("spinDay", spinDay);
+   localStorage.setItem("spinCount", spinCount);
+ }
+}
+
 function updateBalance(){
  document.getElementById("balance").innerText = balance + " Don";
  document.getElementById("adsCount").innerText = adsWatched;
@@ -93,37 +107,43 @@ function updateBalance(){
  localStorage.setItem("adsWatched", adsWatched);
 }
 
+
 function watchAds(){
  if(adsWatched >= 30){
    alert("Daily Ads Limit Reached");
    return;
  }
 
- if(typeof show_11071335 !== "function"){
+ const rewardUser = () => {
    adsWatched++;
    balance += 3;
+
+   if(claimAds < 3){
+      claimAds++;
+      if(claimAds >= 3) canClaim = true;
+   }
+
+   if(spinAds < 3){
+      spinAds++;
+      if(spinAds >= 3) canSpin = true;
+   }
+
    updateBalance();
-   canClaim = true;
-   canSpin = true;
-   alert("Test Mode: +3 Don");
+   alert("You earned 3 Don");
+ };
+
+ if(typeof show_11071335 !== "function"){
+   rewardUser();
    return;
  }
 
- show_11071335().then(() => {
-   adsWatched++;
-   balance += 3;
-   updateBalance();
-   canClaim = true;
-   canSpin = true;
-   alert("You earned 3 Don");
- }).catch(() => {
-   alert("Ad not completed");
- });
+ show_11071335().then(() => rewardUser())
+ .catch(() => alert("Ad not completed"));
 }
 
 function claimReward(){
  if(!canClaim){
-   alert("Watch ad first before claiming");
+   alert("Watch 3 ads before claiming Daily Reward");
    return;
  }
 
@@ -141,13 +161,20 @@ function claimReward(){
  balance += 50;
  localStorage.setItem("lastClaim", now);
  updateBalance();
- canClaim = false;
+ canClaim = false; claimAds = 0;
  alert("You claimed 50 Don");
 }
 
 function spinWheel(){
+ resetDailySpin();
+
+ if(spinCount >= 5){
+   alert("Daily Spin Limit Reached (5/5)");
+   return;
+ }
+
  if(!canSpin){
-   alert("Watch ad first before spin");
+   alert("Watch 3 ads before spin");
    return;
  }
 
@@ -160,7 +187,11 @@ function spinWheel(){
  document.getElementById("spinResult").innerText =
  "You won " + reward + " Don";
 
+ spinCount++;
+ localStorage.setItem("spinCount", spinCount);
+
  canSpin = false;
+ spinAds = 0;
 }
 
 function copyReferral(){
