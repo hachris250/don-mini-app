@@ -1,248 +1,63 @@
 <!DOCTYPE html>
-<html lang="en"><head>
+<html><head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Don Coin App</title>
+<title>Don Coin Pro Firebase</title>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAf7KEPxSrImUvDmZa-Zb4hSeJb9OZ_1IQ",
+  authDomain: "don-coin-app2.firebaseapp.com",
+  projectId: "don-coin-app2",
+  storageBucket: "don-coin-app2.firebasestorage.app",
+  messagingSenderId: "355449400816",
+  appId: "1:355449400816:web:fc1a92d95d65845f5b8135"
+};
+
+const app = initializeApp(firebaseConfig);
+window.db = getFirestore(app);
+</script>
+
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
-body{background:#0f172a;color:#fff;padding:20px;text-align:center}
-.card{background:#1e293b;padding:20px;border-radius:20px;margin-bottom:20px;box-shadow:0 0 10px rgba(0,0,0,.3)}
-.logo{width:120px;height:120px;border-radius:50%;margin-bottom:15px}
-.balance{font-size:30px;margin:15px 0;color:#38bdf8;font-weight:bold}
-button,input{width:100%;padding:15px;border:none;border-radius:12px;margin-top:10px;font-size:16px}
-button{cursor:pointer;font-weight:bold}
-.claim{background:#22c55e;color:#fff}
-.ads{background:#f59e0b;color:#fff}
-.spin{background:#a855f7;color:#fff}
-.swap{background:#06b6d4;color:#fff}
-.withdraw{background:#ef4444;color:#fff}
-.copy{background:#3b82f6;color:#fff}
-.info{margin-top:10px;font-size:14px;color:#cbd5e1}
-.footer{margin-top:20px;font-size:13px;color:#94a3b8}
+body{font-family:Arial;background:#0f172a;color:white;padding:20px;text-align:center}
+.card{background:#1e293b;padding:15px;border-radius:15px;margin:10px 0}
+button,input{width:100%;padding:12px;margin-top:8px}
 </style>
 </head>
 <body>
-
 <div class="card">
-<h1>🪙 Don Coin App</h1>
-<div class="balance" id="balance">100 Don</div>
-<p>1 Don = $0.0001</p>
+<h1>🪙 Don Coin Pro</h1>
+<h2 id="balance">100 Don</h2>
+<p>Firebase Ready Version</p>
 </div>
 
 <div class="card">
-<h2>🎁 Daily Reward</h2>
-<button class="claim" onclick="claimReward()">Claim 50 Don</button>
-<div class="info" id="claimInfo">Watch ad first before claiming</div>
+<h3>🎁 Daily Reward</h3>
+<p>50 Don every 24 hours</p>
 </div>
 
 <div class="card">
-<h2>📺 Watch Ads</h2>
-<button class="ads" onclick="watchAds()">Watch Ad (+3 Don)</button>
-<div class="info">Ads Watched: <span id="adsCount">0</span>/30</div>
+<h3>📺 Ads</h3>
+<p>3 Don per ad - 30 ads/day</p>
 </div>
 
 <div class="card">
-<h2>🎰 Spin &amp; Win</h2>
-<button class="spin" onclick="spinWheel()">Spin</button>
-<div class="info" id="spinResult">Watch ad first before spin</div>
+<h3>🎰 Spin</h3>
+<p>5 spins/day</p>
 </div>
 
 <div class="card">
-<h2>👥 Referral Program</h2>
-<input type="text" id="referralLink" readonly="">
-<button class="copy" onclick="copyReferral()">Copy Referral Link</button>
+<h3>👥 Referral</h3>
+<p>100 Don signup bonus + 10% commission</p>
 </div>
 
 <div class="card">
-<h2>🔄 Swap Don → USDT</h2>
-<button class="swap" onclick="swapCoins()">Swap Coins</button>
-<div class="info">Minimum Swap: 10000 Don</div>
+<input placeholder="USDT Wallet">
+<button>Withdraw</button>
 </div>
 
-<div class="card">
-<h2>💸 Withdraw</h2>
-<input type="text" id="wallet" placeholder="Enter USDT Wallet">
-<button class="withdraw" onclick="withdrawCoins()">Withdraw</button>
-<div class="info">Minimum Withdraw: 10000 Don</div>
-</div>
-
-<div class="footer">Don Coin App © 2026</div>
-
-<script src="//libtl.com/sdk.js" data-zone="11071335" data-sdk="show_11071335"></script>
-
-<script>
-let balance = Number(localStorage.getItem("balance")) || 100;
-let adsWatched = Number(localStorage.getItem("adsWatched")) || 0;
-let canClaim = false;
-let canSpin = false;
-let claimAds = 0;
-let spinAds = 0;
-let spinCount = Number(localStorage.getItem("spinCount")) || 0;
-let spinDay = localStorage.getItem("spinDay") || new Date().toDateString();
-
-let userId = localStorage.getItem("userId");
-if(!userId){
- userId = Math.floor(Math.random()*100000);
- localStorage.setItem("userId", userId);
-}
-
-const referralLink = `https://t.me/DonCoinApp_bot?start=${userId}`;
-document.getElementById("referralLink").value = referralLink;
-
-function resetDailySpin(){
- const today = new Date().toDateString();
- if(spinDay !== today){
-   spinDay = today;
-   spinCount = 0;
-   localStorage.setItem("spinDay", spinDay);
-   localStorage.setItem("spinCount", spinCount);
- }
-}
-
-function updateBalance(){
- document.getElementById("balance").innerText = balance + " Don";
- document.getElementById("adsCount").innerText = adsWatched;
- localStorage.setItem("balance", balance);
- localStorage.setItem("adsWatched", adsWatched);
-}
-
-
-function watchAds(){
- if(adsWatched >= 30){
-   alert("Daily Ads Limit Reached");
-   return;
- }
-
- const rewardUser = () => {
-   adsWatched++;
-   balance += 3;
-
-   if(claimAds < 3){
-      claimAds++;
-      if(claimAds >= 3) canClaim = true;
-   }
-
-   if(spinAds < 3){
-      spinAds++;
-      if(spinAds >= 3) canSpin = true;
-   }
-
-   updateBalance();
-   alert("You earned 3 Don");
- };
-
- if(typeof show_11071335 !== "function"){
-   rewardUser();
-   return;
- }
-
- show_11071335().then(() => rewardUser())
- .catch(() => alert("Ad not completed"));
-}
-
-async function claimReward(){
-
- let lastClaim = Number(localStorage.getItem("lastClaim")) || 0;
- let now = Date.now();
-
- if(lastClaim && now - lastClaim < 86400000){
-   let remaining = 86400000 - (now - lastClaim);
-   let hours = Math.ceil(remaining / 3600000);
-   document.getElementById("claimInfo").innerText =
-   "Come back in " + hours + " hours";
-   return;
- }
-
- try{
-
-   await show_11071335();
-   await show_11071335();
-   await show_11071335();
-
-   balance += 50;
-   localStorage.setItem("lastClaim", now);
-   updateBalance();
-
-   alert("You claimed 50 Don");
-
- }catch{
-   alert("Complete all 3 ads first");
- }
-
-}
-
-async function spinWheel(){
-
- resetDailySpin();
-
- if(spinCount >= 5){
-   alert("Daily Spin Limit Reached (5/5)");
-   return;
- }
-
- try{
-
-   await show_11071335();
-   await show_11071335();
-   await show_11071335();
-
-   let rewards = [0,1,2,3,5,10,20,50];
-   let reward = rewards[Math.floor(Math.random()*rewards.length)];
-
-   balance += reward;
-
-   spinCount++;
-   localStorage.setItem("spinCount", spinCount);
-
-   updateBalance();
-
-   document.getElementById("spinResult").innerText =
-   "You won " + reward + " Don";
-
- }catch{
-   alert("Complete all 3 ads first");
- }
-
-}
-
-function copyReferral(){
- navigator.clipboard.writeText(referralLink);
- alert("Referral Link Copied");
-}
-
-function swapCoins(){
- if(balance < 10000){
-   alert("Minimum Swap is 10000 Don");
-   return;
- }
-
- let usdt = balance * 0.0001;
- balance = 0;
- updateBalance();
- alert("Swapped to $" + usdt.toFixed(2));
-}
-
-function withdrawCoins(){
- let wallet = document.getElementById("wallet").value.trim();
-
- if(wallet === ""){
-   alert("Enter wallet address");
-   return;
- }
-
- if(balance < 10000){
-   alert("Minimum Withdraw is 10000 Don");
-   return;
- }
-
- let usdt = balance * 0.0001;
- balance = 0;
- updateBalance();
-
- alert("Withdraw Request Sent: $" + usdt.toFixed(2));
-}
-
-updateBalance();
-</script>
 
 </body></html>
