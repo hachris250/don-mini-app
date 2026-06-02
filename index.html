@@ -80,6 +80,30 @@ let spinAds = 0;
 let spinCount = Number(localStorage.getItem("spinCount")) || 0;
 let spinDay = localStorage.getItem("spinDay") || new Date().toDateString();
 
+let adsResetTime = Number(localStorage.getItem("adsResetTime")) || 0;
+let spinResetTime = Number(localStorage.getItem("spinResetTime")) || 0;
+
+function resetAdsAfter24Hours(){
+  let now = Date.now();
+  if(adsResetTime && now >= adsResetTime){
+    adsWatched = 0;
+    adsResetTime = 0;
+    localStorage.setItem("adsWatched", 0);
+    localStorage.setItem("adsResetTime", 0);
+  }
+}
+
+function resetSpinsAfter24Hours(){
+  let now = Date.now();
+  if(spinResetTime && now >= spinResetTime){
+    spinCount = 0;
+    spinResetTime = 0;
+    localStorage.setItem("spinCount", 0);
+    localStorage.setItem("spinResetTime", 0);
+  }
+}
+
+
 let userId = localStorage.getItem("userId");
 if(!userId){
  userId = Math.floor(Math.random()*100000);
@@ -108,8 +132,17 @@ function updateBalance(){
 
 
 function watchAds(){
+ resetAdsAfter24Hours();
+
  if(adsWatched >= 30){
-   alert("Daily Ads Limit Reached");
+
+   if(!adsResetTime){
+      adsResetTime = Date.now() + 86400000;
+      localStorage.setItem("adsResetTime", adsResetTime);
+   }
+
+   let hours = Math.ceil((adsResetTime - Date.now()) / 3600000);
+   alert("Ads limit reached. Come back in " + hours + " hours");
    return;
  }
 
@@ -175,8 +208,17 @@ async function spinWheel(){
 
  resetDailySpin();
 
+ resetSpinsAfter24Hours();
+
  if(spinCount >= 5){
-   alert("Daily Spin Limit Reached (5/5)");
+
+   if(!spinResetTime){
+      spinResetTime = Date.now() + 86400000;
+      localStorage.setItem("spinResetTime", spinResetTime);
+   }
+
+   let hours = Math.ceil((spinResetTime - Date.now()) / 3600000);
+   alert("Spin limit reached. Come back in " + hours + " hours");
    return;
  }
 
