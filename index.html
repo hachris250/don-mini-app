@@ -38,13 +38,13 @@ button{cursor:pointer;font-weight:bold}
 <div class="card">
 <h2>📺 Watch Ads</h2>
 <button class="ads" onclick="watchAds()">Watch Ad (+3 Don)</button>
-<div class="info">Ads Watched: <span id="adsCount">0</span>/30</div>
+<div class="info">Ads Watched: <span id="adsCount">0</span>/30</div><div class="info" id="adsTimer"></div>
 </div>
 
 <div class="card">
 <h2>🎰 Spin &amp; Win</h2>
 <button class="spin" onclick="spinWheel()">Spin</button>
-<div class="info" id="spinResult">Watch ad first before spin</div>
+<div class="info" id="spinResult">Watch ad first before spin</div><div class="info" id="spinTimer"></div>
 </div>
 
 <div class="card">
@@ -148,6 +148,10 @@ function watchAds(){
 
  const rewardUser = () => {
    adsWatched++;
+   if(adsWatched >= 30 && !adsResetTime){
+      adsResetTime = Date.now() + 86400000;
+      localStorage.setItem("adsResetTime", adsResetTime);
+   }
    balance += 3;
 
    if(claimAds < 3){
@@ -234,6 +238,10 @@ async function spinWheel(){
    balance += reward;
 
    spinCount++;
+   if(spinCount >= 5 && !spinResetTime){
+      spinResetTime = Date.now() + 86400000;
+      localStorage.setItem("spinResetTime", spinResetTime);
+   }
    localStorage.setItem("spinCount", spinCount);
 
    updateBalance();
@@ -284,7 +292,49 @@ function withdrawCoins(){
  alert("Withdraw Request Sent: $" + usdt.toFixed(2));
 }
 
+
+function updateTimers(){
+ let now = Date.now();
+
+ let adsEl = document.getElementById("adsTimer");
+ if(adsEl){
+   if(adsResetTime && adsWatched >= 30){
+      let diff = adsResetTime - now;
+      if(diff > 0){
+        let h = Math.floor(diff/3600000);
+        let m = Math.floor((diff%3600000)/60000);
+        adsEl.innerText = "Reset in " + h + "h " + m + "m";
+      } else {
+        adsEl.innerText = "";
+      }
+   } else {
+      adsEl.innerText = "";
+   }
+ }
+
+ let spinEl = document.getElementById("spinTimer");
+ if(spinEl){
+   if(spinResetTime && spinCount >= 5){
+      let diff = spinResetTime - now;
+      if(diff > 0){
+        let h = Math.floor(diff/3600000);
+        let m = Math.floor((diff%3600000)/60000);
+        spinEl.innerText = "Reset in " + h + "h " + m + "m";
+      } else {
+        spinEl.innerText = "";
+      }
+   } else {
+      spinEl.innerText = "";
+   }
+ }
+}
+
+resetAdsAfter24Hours();
+resetSpinsAfter24Hours();
 updateBalance();
+updateTimers();
+setInterval(updateTimers, 60000);
+
 </script>
 
 
